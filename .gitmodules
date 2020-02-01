@@ -1,0 +1,3 @@
+[submodule "thirdparty/v8capi"]
+	path = thirdparty/v8capi
+	url = ../v8capi.git
