@@ -6,7 +6,7 @@ import (
 	"runtime"
 	"sync"
 
-	v8 "github.com/mtrempoltsev/go-with-js/v8"
+	v8 "github.com/mtrempoltsev/gojs/v8"
 )
 
 type script struct {

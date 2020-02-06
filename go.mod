@@ -1,3 +1,3 @@
-module github.com/mtrempoltsev/go-with-js
+module github.com/mtrempoltsev/gojs
 
 go 1.13

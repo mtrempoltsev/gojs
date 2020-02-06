@@ -1,7 +1,7 @@
 package v8
 
 // #cgo CFLAGS: -I../thirdparty/v8capi/include -O0 -g
-// #cgo LDFLAGS: -L../build -lv8capi -lv8_monolith
+// #cgo LDFLAGS: -L../out -lv8capi -lv8_monolith
 // #cgo LDFLAGS: -lstdc++ -lm
 // #include <stdlib.h>
 // #include <v8capi.h>

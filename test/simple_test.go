@@ -5,7 +5,7 @@ import (
 
 	"testing"
 
-	js "github.com/mtrempoltsev/go-with-js"
+	js "github.com/mtrempoltsev/gojs"
 )
 
 func TestCommon(t *testing.T) {
