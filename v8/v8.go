@@ -69,9 +69,7 @@ type Script struct {
 	ptr *C.struct_v8_script
 }
 
-type Value interface{}
-
-func (script *Script) Run() (Value, error) {
+func (script *Script) Run() (*Value, error) {
 	var res C.struct_v8_value
 	defer C.v8_delete_value(&res)
 
@@ -82,7 +80,7 @@ func (script *Script) Run() (Value, error) {
 		return nil, errors.New(makeError(err))
 	}
 
-	return nil, nil
+	return &Value{data: res}, nil
 }
 
 func (script *Script) Dispose() {

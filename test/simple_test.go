@@ -1,37 +1,24 @@
-package js
+package gojs
 
 import (
-	"fmt"
-
 	"testing"
 
-	js "github.com/mtrempoltsev/gojs"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestCommon(t *testing.T) {
-	js, err := js.New(0)
+	res, err := runScript("my.js", "2")
+
+	assert.NoError(t, err)
+
 	if err != nil {
-		fmt.Println(err)
 		return
 	}
 
-	err = js.Compile("my.js", "2 + 2")
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
+	defer res.Dispose()
 
-	future, err := js.Run("my.js")
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
+	val, err := res.ToInt()
 
-	res := <-future
-	if res.Err != nil {
-		fmt.Println(res.Err)
-		return
-	}
-
-	js.Dispose()
+	assert.NoError(t, err)
+	assert.Equal(t, val, int64(2))
 }

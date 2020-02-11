@@ -1,4 +1,4 @@
-package js
+package gojs
 
 import (
 	"errors"
@@ -34,11 +34,8 @@ func (script *script) dispose() {
 }
 
 func (script *script) run() (Value, error) {
-	_, err := script.ptr.Run()
-	return nil, err
+	return script.ptr.Run()
 }
-
-type Value interface{}
 
 type Result struct {
 	Val Value
@@ -77,11 +74,14 @@ func (runner *runner) start() {
 			continue
 		}
 
+		defer close(task.res)
+
 		switch task.cmd {
 		case run:
 			runner.mutex.RLock()
 			script := runner.scripts[task.name]
 			runner.mutex.RUnlock()
+
 			if script == nil {
 				task.res <- &Result{
 					Val: nil,
@@ -89,14 +89,10 @@ func (runner *runner) start() {
 				}
 			} else {
 				res, err := script.run()
-				if res != nil && err != nil {
-
-				}
 				task.res <- &Result{
-					Val: nil,
-					Err: nil,
+					Val: res,
+					Err: err,
 				}
-				close(task.res)
 			}
 			break
 		case callFunction:
