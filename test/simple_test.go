@@ -1,4 +1,4 @@
-package gojs
+package test
 
 import (
 	"testing"
@@ -7,7 +7,7 @@ import (
 )
 
 func TestCommon(t *testing.T) {
-	res, err := runScript("my.js", "2")
+	res, err := runScript("my.js", "2 + 2")
 
 	assert.NoError(t, err)
 
@@ -20,5 +20,5 @@ func TestCommon(t *testing.T) {
 	val, err := res.ToInt()
 
 	assert.NoError(t, err)
-	assert.Equal(t, val, int64(2))
+	assert.Equal(t, val, int64(4))
 }

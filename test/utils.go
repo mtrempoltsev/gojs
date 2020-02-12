@@ -1,21 +1,21 @@
-package gojs
+package test
 
-import "github.com/mtrempoltsev/gojs"
+import "github.com/mtrempoltsev/gojs/internal/abstract"
 
-func runScript(id, code string) (gojs.Value, error) {
-	err := _js.Compile(id, code)
+func runScript(id, code string) (abstract.Value, error) {
+	err := _jsExecutor.Compile(id, code)
 	if err != nil {
 		return nil, err
 	}
 
-	future, err := _js.Run(id)
+	future, err := _jsExecutor.Run(id)
 	if err != nil {
 		return nil, err
 	}
 
 	res := <-future
 	if res.Err != nil {
-		return nil, err
+		return nil, res.Err
 	}
 
 	return res.Val, nil

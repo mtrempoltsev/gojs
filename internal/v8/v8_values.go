@@ -45,6 +45,10 @@ func (val Value) typeAsString() string {
 	return "[unknown type]"
 }
 
+func makeUndefined() Value {
+	return Value{data: C.v8_new_undefined()}
+}
+
 func (val Value) IsUndefined() bool {
 	return bool(C.v8_is_undefined(val.data))
 }

@@ -1,4 +1,4 @@
-package gojs
+package test
 
 import (
 	"os"
@@ -7,12 +7,12 @@ import (
 	"github.com/mtrempoltsev/gojs"
 )
 
-var _js *gojs.Engine
+var _jsExecutor *gojs.Executor
 
 func TestMain(m *testing.M) {
 	var err error
 
-	_js, err = gojs.New(0)
+	_jsExecutor, err = gojs.New(0)
 	if err != nil {
 		os.Stderr.WriteString(err.Error())
 		os.Exit(1)
@@ -20,7 +20,7 @@ func TestMain(m *testing.M) {
 
 	code := m.Run()
 
-	_js.Dispose()
+	_jsExecutor.Dispose()
 
 	os.Exit(code)
 }

@@ -1,4 +1,4 @@
-package gojs
+package abstract
 
 type Value interface {
 	Dispose()

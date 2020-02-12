@@ -1,4 +1,4 @@
-package gojs
+package test
 
 import (
 	"testing"
