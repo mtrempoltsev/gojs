@@ -14,7 +14,7 @@ import (
 	"strings"
 	"unsafe"
 
-	"github.com/mtrempoltsev/gojs/internal/abstract"
+	"github.com/mtrempoltsev/gojs/engines"
 )
 
 func makeError(err C.struct_v8_error) string {
@@ -56,26 +56,26 @@ type Engine struct {
 	ptr *C.struct_v8_instance
 }
 
-func New() (Engine, error) {
+func New() (engines.Engine, error) {
 	path := C.CString(os.Args[0])
 	defer C.free(unsafe.Pointer(path))
 
-	return Engine{
+	return &Engine{
 		ptr: C.v8_new_instance(path),
 	}, nil
 }
 
-func (Engine) NewRunner() (abstract.Runner, error) {
-	return Runner{
+func (*Engine) NewRunner() (engines.Runner, error) {
+	return &Runner{
 		ptr: C.v8_new_isolate(),
 	}, nil
 }
 
-func (engine Engine) Dispose() {
+func (engine *Engine) Dispose() {
 	C.v8_delete_instance(engine.ptr)
 }
 
-func (runner Runner) Compile(name, code string) (abstract.Script, error) {
+func (runner *Runner) Compile(name, code string) (engines.Script, error) {
 	codePtr := C.CString(code)
 	defer C.free(unsafe.Pointer(codePtr))
 
@@ -88,17 +88,17 @@ func (runner Runner) Compile(name, code string) (abstract.Script, error) {
 	script := C.v8_compile_script(runner.ptr, codePtr, namePtr, &err)
 
 	if script == nil {
-		return Script{}, errors.New(makeError(err))
+		return nil, errors.New(makeError(err))
 	}
 
-	return Script{script}, nil
+	return &Script{script}, nil
 }
 
-func (runner Runner) Dispose() {
+func (runner *Runner) Dispose() {
 	C.v8_delete_isolate(runner.ptr)
 }
 
-func (script Script) Run() (abstract.Value, error) {
+func (script *Script) Run() (engines.Value, error) {
 	var res C.struct_v8_value
 	defer C.v8_delete_value(&res)
 
@@ -112,28 +112,28 @@ func (script Script) Run() (abstract.Value, error) {
 	return Value{data: res}, nil
 }
 
-func (script Script) Terminate() {
+func (script *Script) Terminate() {
 	// TODO: implement this
 }
 
-func (script Script) GetFunction(funcName string) (abstract.Function, error) {
+func (script *Script) GetFunction(funcName string) (engines.Function, error) {
 	// TODO: implement this
 	return nil, nil
 }
 
-func (script Script) Dispose() {
+func (script *Script) Dispose() {
 	C.v8_delete_script(script.ptr)
 }
 
-func (function Function) Call(args ...Value) (Value, error) {
+func (function *Function) Call(args ...engines.Value) (engines.Value, error) {
 	// TODO: implement this
 	return makeUndefined(), nil
 }
 
-func (function Function) Terminate() {
+func (function *Function) Terminate() {
 	// TODO: implement this
 }
 
-func (function Function) Dispose() {
+func (function *Function) Dispose() {
 	C.v8_delete_function(function.ptr)
 }

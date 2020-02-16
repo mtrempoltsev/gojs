@@ -1,8 +1,8 @@
 package test
 
-import "github.com/mtrempoltsev/gojs/internal/abstract"
+import "github.com/mtrempoltsev/gojs/engines"
 
-func runScript(id, code string) (abstract.Value, error) {
+func runScript(id, code string) (engines.Value, error) {
 	err := _jsExecutor.Compile(id, code)
 	if err != nil {
 		return nil, err

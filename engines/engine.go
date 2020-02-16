@@ -1,4 +1,4 @@
-package abstract
+package engines
 
 type Function interface {
 	Call(args ...Value) (Value, error)

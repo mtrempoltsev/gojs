@@ -6,12 +6,12 @@ import (
 	"runtime"
 	"sync"
 
-	"github.com/mtrempoltsev/gojs/internal/abstract"
-	"github.com/mtrempoltsev/gojs/internal/v8"
+	"github.com/mtrempoltsev/gojs/engines"
+	"github.com/mtrempoltsev/gojs/engines/v8"
 )
 
 type Result struct {
-	Val abstract.Value
+	Val engines.Value
 	Err error
 }
 
@@ -27,18 +27,18 @@ const (
 type task struct {
 	cmd  command
 	name string
-	args []abstract.Value
+	args []engines.Value
 	res  ResultChannel
 }
 
 type taskChannel chan *task
 
 type scriptCtx struct {
-	script    abstract.Script
-	functions map[string]abstract.Function
+	script    engines.Script
+	functions map[string]engines.Function
 }
 
-func (ctx *scriptCtx) run() (abstract.Value, error) {
+func (ctx *scriptCtx) run() (engines.Value, error) {
 	return ctx.script.Run()
 }
 
@@ -50,7 +50,7 @@ func (ctx *scriptCtx) dispose() {
 }
 
 type runnerCtx struct {
-	runner       abstract.Runner
+	runner       engines.Runner
 	scripts      map[string]*scriptCtx
 	pendingTasks taskChannel
 	mutex        sync.RWMutex
@@ -83,7 +83,6 @@ func (ctx *runnerCtx) start() {
 					Err: err,
 				}
 			}
-			break
 		case callFunction:
 			break
 		}
@@ -98,7 +97,7 @@ func (ctx *runnerCtx) compile(scriptName, code string) (*scriptCtx, error) {
 
 	return &scriptCtx{
 		script:    script,
-		functions: make(map[string]abstract.Function),
+		functions: make(map[string]engines.Function),
 	}, nil
 }
 
@@ -110,7 +109,7 @@ func (ctx *runnerCtx) dispose() {
 }
 
 type Executor struct {
-	engine       abstract.Engine
+	engine       engines.Engine
 	pendingTasks taskChannel
 	runners      []*runnerCtx
 }
