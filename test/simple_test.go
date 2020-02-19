@@ -20,5 +20,5 @@ func TestCommon(t *testing.T) {
 	val, err := res.ToInt()
 
 	assert.NoError(t, err)
-	assert.Equal(t, val, int64(4))
+	assert.Equal(t, int64(4), val)
 }

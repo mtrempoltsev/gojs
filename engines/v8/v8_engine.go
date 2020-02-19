@@ -100,7 +100,6 @@ func (runner *Runner) Dispose() {
 
 func (script *Script) Run() (engines.Value, error) {
 	var res C.struct_v8_value
-	defer C.v8_delete_value(&res)
 
 	var err C.struct_v8_error
 	defer C.v8_delete_error(&err)
@@ -127,7 +126,7 @@ func (script *Script) Dispose() {
 
 func (function *Function) Call(args ...engines.Value) (engines.Value, error) {
 	// TODO: implement this
-	return makeUndefined(), nil
+	return nil, nil
 }
 
 func (function *Function) Terminate() {
