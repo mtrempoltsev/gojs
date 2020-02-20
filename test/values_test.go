@@ -195,7 +195,7 @@ func TestUint(t *testing.T) {
 
 	assert.Error(t, err)
 
-	res, err = runScript("my.js", "true")
+	res, err = runScript("my.js", "undefined")
 
 	assert.NoError(t, err)
 
@@ -208,7 +208,7 @@ func TestUint(t *testing.T) {
 	val, err = res.ToUint()
 
 	assert.Error(t, err)
-	assert.Equal(t, "Can't convert boolean to uint64", err.Error())
+	assert.Equal(t, "Can't convert undefined to uint64", err.Error())
 }
 
 func TestFloat(t *testing.T) {
@@ -283,7 +283,7 @@ func TestString(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, "ok", val)
 
-	res, err = runScript("my.js", "true")
+	res, err = runScript("my.js", "null")
 
 	assert.NoError(t, err)
 
@@ -296,7 +296,7 @@ func TestString(t *testing.T) {
 	val, err = res.ToString()
 
 	assert.Error(t, err)
-	assert.Equal(t, "Can't convert boolean to string", err.Error())
+	assert.Equal(t, "Can't convert null to string", err.Error())
 }
 
 func TestObject(t *testing.T) {
@@ -402,7 +402,7 @@ func TestBoolArray(t *testing.T) {
 	assert.Error(t, err)
 	assert.Equal(t, "Can't convert number to []bool", err.Error())
 
-	res, err = runScript("my.js", "[true, 1, true]")
+	res, err = runScript("my.js", "[true, 'abc', true]")
 
 	assert.NoError(t, err)
 
@@ -415,7 +415,7 @@ func TestBoolArray(t *testing.T) {
 	arr, err = res.ToBoolArray()
 
 	assert.Error(t, err)
-	assert.Equal(t, "[1]: Can't convert number to bool", err.Error())
+	assert.Equal(t, "[1]: Can't convert string to bool", err.Error())
 }
 
 func TestIntArray(t *testing.T) {
@@ -446,7 +446,7 @@ func TestIntArray(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, []int64{-1, 0, 1}, arr)
 
-	res, err = runScript("my.js", "true")
+	res, err = runScript("my.js", "let x = {a: 1}; x")
 
 	assert.NoError(t, err)
 
@@ -459,9 +459,9 @@ func TestIntArray(t *testing.T) {
 	arr, err = res.ToIntArray()
 
 	assert.Error(t, err)
-	assert.Equal(t, "Can't convert boolean to []int64", err.Error())
+	assert.Equal(t, "Can't convert object to []int64", err.Error())
 
-	res, err = runScript("my.js", "[1, true, 3]")
+	res, err = runScript("my.js", "[1, [2], 3]")
 
 	assert.NoError(t, err)
 
@@ -474,7 +474,7 @@ func TestIntArray(t *testing.T) {
 	arr, err = res.ToIntArray()
 
 	assert.Error(t, err)
-	assert.Equal(t, "[1]: Can't convert boolean to int64", err.Error())
+	assert.Equal(t, "[1]: Can't convert array to int64", err.Error())
 
 	res, err = runScript("my.js", "[1, 1.5]")
 
@@ -520,7 +520,7 @@ func TestUintArray(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, []uint64{0, 1, 2}, arr)
 
-	res, err = runScript("my.js", "true")
+	res, err = runScript("my.js", "new Set([1])")
 
 	assert.NoError(t, err)
 
@@ -533,9 +533,9 @@ func TestUintArray(t *testing.T) {
 	arr, err = res.ToUintArray()
 
 	assert.Error(t, err)
-	assert.Equal(t, "Can't convert boolean to []uint64", err.Error())
+	assert.Equal(t, "Can't convert set to []uint64", err.Error())
 
-	res, err = runScript("my.js", "[0, true]")
+	res, err = runScript("my.js", "[0, new Map([[1, 2]])]")
 
 	assert.NoError(t, err)
 
@@ -548,7 +548,7 @@ func TestUintArray(t *testing.T) {
 	arr, err = res.ToUintArray()
 
 	assert.Error(t, err)
-	assert.Equal(t, "[1]: Can't convert boolean to uint64", err.Error())
+	assert.Equal(t, "[1]: Can't convert map to uint64", err.Error())
 
 	res, err = runScript("my.js", "[1, 1.5]")
 
@@ -697,4 +697,7 @@ func TestStringArray(t *testing.T) {
 
 	assert.Error(t, err)
 	assert.Equal(t, "[1]: Can't convert number to string", err.Error())
+}
+
+func TestNotImplemented(t *testing.T) {
 }
