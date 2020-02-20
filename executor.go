@@ -140,7 +140,7 @@ func New(runnersNum int) (*Executor, error) {
 		runnersNum = runtime.NumCPU()
 	}
 
-	engine, err := v8.New()
+	engine, err := v8.New(runnersNum)
 	if err != nil {
 		return nil, err
 	}

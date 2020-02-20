@@ -56,12 +56,12 @@ type Engine struct {
 	ptr *C.struct_v8_instance
 }
 
-func New() (engines.Engine, error) {
+func New(runnersNum int) (engines.Engine, error) {
 	path := C.CString(os.Args[0])
 	defer C.free(unsafe.Pointer(path))
 
 	return &Engine{
-		ptr: C.v8_new_instance(path),
+		ptr: C.v8_new_instance(C.uint(runnersNum), path),
 	}, nil
 }
 
