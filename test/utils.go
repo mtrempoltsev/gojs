@@ -8,15 +8,5 @@ func runScript(id, code string) (engines.Value, error) {
 		return nil, err
 	}
 
-	future, err := _jsExecutor.Run(id)
-	if err != nil {
-		return nil, err
-	}
-
-	res := <-future
-	if res.Err != nil {
-		return nil, res.Err
-	}
-
-	return res.Val, nil
+	return _jsExecutor.Run(id)
 }

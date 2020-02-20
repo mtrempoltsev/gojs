@@ -227,7 +227,7 @@ func (executor *Executor) Compile(scriptName, code string) error {
 	return nil
 }
 
-func (executor *Executor) Run(scriptName string) (ResultChannel, error) {
+func (executor *Executor) RunAsync(scriptName string) (ResultChannel, error) {
 	if len(scriptName) == 0 {
 		return nil, errors.New("gojs.Executor.Run: you must specify scriptID")
 	}
@@ -241,6 +241,17 @@ func (executor *Executor) Run(scriptName string) (ResultChannel, error) {
 	}
 
 	return res, nil
+}
+
+func (executor *Executor) Run(scriptName string) (engines.Value, error) {
+	future, err := executor.RunAsync(scriptName)
+	if err != nil {
+		return nil, err
+	}
+
+	res := <-future
+
+	return res.Val, res.Err
 }
 
 func (executor *Executor) Dispose() {
