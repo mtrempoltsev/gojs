@@ -3,10 +3,24 @@ package benchmarks
 import (
 	"fmt"
 	"os"
+	"sync"
 	"testing"
 )
 
-func BenchmarkV8Run(b *testing.B) {
+func run(id string, n int, wait *sync.WaitGroup) {
+	for i := 0; i < n; i++ {
+		res, err := _jsExecutor.Run(id)
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+
+		res.Dispose()
+	}
+	wait.Done()
+}
+
+func BenchmarkV8RunX4(b *testing.B) {
 	const id = "my.js"
 	const code = "var x = {" +
 		"	b: true," +
@@ -28,13 +42,14 @@ func BenchmarkV8Run(b *testing.B) {
 
 	b.ResetTimer()
 
-	for i := 0; i < b.N; i++ {
-		res, err := _jsExecutor.Run(id)
-		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
-		}
+	var wait sync.WaitGroup
 
-		res.Dispose()
+	const X = 4
+
+	for i := 0; i < X; i++ {
+		wait.Add(1)
+		go run(id, b.N/X, &wait)
 	}
+
+	wait.Wait()
 }

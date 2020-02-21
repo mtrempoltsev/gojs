@@ -12,7 +12,7 @@ var _jsExecutor *gojs.Executor
 func TestMain(m *testing.M) {
 	var err error
 
-	_jsExecutor, err = gojs.New(1)
+	_jsExecutor, err = gojs.New(4)
 	if err != nil {
 		os.Stderr.WriteString(err.Error())
 		os.Exit(1)

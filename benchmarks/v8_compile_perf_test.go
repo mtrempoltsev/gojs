@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func BenchmarkV8Run(b *testing.B) {
+func BenchmarkV8Compile(b *testing.B) {
 	const id = "my.js"
 	const code = "var x = {" +
 		"	b: true," +
@@ -20,21 +20,11 @@ func BenchmarkV8Run(b *testing.B) {
 		"	o: { x: 2, y: false }, " +
 		"}; x"
 
-	err := _jsExecutor.Compile(id, code)
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-
-	b.ResetTimer()
-
 	for i := 0; i < b.N; i++ {
-		res, err := _jsExecutor.Run(id)
+		err := _jsExecutor.Compile(id, code)
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(1)
 		}
-
-		res.Dispose()
 	}
 }
