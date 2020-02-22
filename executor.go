@@ -63,8 +63,6 @@ func (ctx *runnerCtx) start() {
 			continue
 		}
 
-		defer close(task.res)
-
 		switch task.cmd {
 		case run:
 			ctx.mutex.RLock()
@@ -76,12 +74,14 @@ func (ctx *runnerCtx) start() {
 					Val: nil,
 					Err: fmt.Errorf("gojs.Executor: can't find script '%s'", task.name),
 				}
+				close(task.res)
 			} else {
 				res, err := script.run()
 				task.res <- &Result{
 					Val: res,
 					Err: err,
 				}
+				close(task.res)
 			}
 		case callFunction:
 			break
@@ -187,6 +187,8 @@ func (executor *Executor) Compile(scriptName, code string) error {
 	n := len(executor.runners)
 
 	channel := make(chan results, n)
+
+	defer close(channel)
 
 	for i := 0; i < n; i++ {
 		go func(i int) {
