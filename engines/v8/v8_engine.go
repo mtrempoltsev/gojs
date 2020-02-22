@@ -102,13 +102,14 @@ func (script *Script) Run() (engines.Value, error) {
 	var res C.struct_v8_value
 
 	var err C.struct_v8_error
-	defer C.v8_delete_error(&err)
 
-	if !C.v8_run_script(script.ptr, &res, &err) {
-		return nil, errors.New(makeError(err))
+	if C.v8_run_script(script.ptr, &res, &err) {
+		return Value{data: res}, nil
 	}
 
-	return Value{data: res}, nil
+	str := makeError(err)
+	C.v8_delete_error(&err)
+	return nil, errors.New(str)
 }
 
 func (script *Script) Terminate() {
